@@ -1,4 +1,4 @@
-# Creating main company class
+# Creating main company
 class Company:
     def __init__(
             self, cash, account_receivables, inventory, current_assets 
@@ -7,6 +7,7 @@ class Company:
             , current_lia, noncurrent_lia 
             , owners_equity, net_income , ebit   
             , total_rev, sales_rev , total_exp, operating_exp, interest_exp, depr_exp, wages_exp
+            , date_record
             ):
         
         # Assigning values to attributes
@@ -32,12 +33,16 @@ class Company:
         self.ebit = ebit        
         
         # Income statement 
+        self.total_rev = total_rev
         self.sales_rev = sales_rev
         self.total_exp = total_exp
         self.operating_exp = operating_exp
         self.interest_exp = interest_exp
         self.depr_exp = depr_exp
         self.wages_exp = wages_exp
+
+        #balance sheet date
+        self.date_record = date_record
     
     # Totals Methods
     # - Total assets calculation
@@ -106,7 +111,7 @@ class Company:
         return self.net_income / self.total_assets()
     
     # -- Return on equity
-    def return_assets(self):
+    def return_equity(self):
         return self.net_income / self.owners_equity
     
     def wages_rev_ratio(self):
@@ -121,7 +126,8 @@ class Hotel(Company):
         , intangible_assets, longterm_investments 
         , current_lia, noncurrent_lia 
         , owners_equity, net_income , ebit  
-        , total_rev, sales_rev , total_exp, operating_exp, interest_exp, depr_exp, wages_exp  
+        , total_rev, sales_rev , total_exp, operating_exp, interest_exp, depr_exp, wages_exp
+        , date_record  
         ):
         
         # Intializing subclass attributes
@@ -137,7 +143,8 @@ class Hotel(Company):
         , intangible_assets, longterm_investments 
         , current_lia, noncurrent_lia 
         , owners_equity, net_income , ebit  
-        , total_rev, sales_rev , total_exp, operating_exp, interest_exp, depr_exp, wages_exp  
+        , total_rev, sales_rev , total_exp, operating_exp, interest_exp, depr_exp, wages_exp
+        , date_record  
         )
         
     # Other metrics methods
@@ -165,24 +172,21 @@ class Hotel(Company):
     # Revenue Per Available Rooms
     def rev_par(self):
         return self.ave_daily_rate() * self.occ_rate()
-    
-
-        
+    # Pandas 
+  
 #trade
 class Trade(Company):
     def __init__(
-        self, cogs
+        self, cogs, ave_inv
         , cash, account_receivables, inventory, current_assets 
         , noncurrent_assets , accu_depr 
         , intangible_assets, longterm_investments 
         , current_lia, noncurrent_lia 
         , owners_equity, net_income , ebit  
-        , total_rev, sales_rev , total_exp, operating_exp, interest_exp, depr_exp, wages_exp  
+        , total_rev, sales_rev , total_exp, operating_exp, interest_exp, depr_exp, wages_exp
+        , date_record  
         ):
         
-        # Intializing subclass attributes
-        self.cogs = cogs
-
         # initialize attributes from the base class within the subclasses
         super().__init__(
         cash, account_receivables, inventory, current_assets 
@@ -190,17 +194,22 @@ class Trade(Company):
         , intangible_assets, longterm_investments 
         , current_lia, noncurrent_lia 
         , owners_equity, net_income , ebit  
-        , total_rev, sales_rev , total_exp, operating_exp, interest_exp, depr_exp, wages_exp  
+        , total_rev, sales_rev , total_exp, operating_exp, interest_exp, depr_exp, wages_exp
+        , date_record  
         )
         
+        # Intializing subclass attributes
+        self.cogs = cogs
+        self.ave_inv = ave_inv
+
     # Specific Financial Ratios methods
     # Inventory turnover 
     def inv_trnovr(self):
-        return self.cogs / self.inventory
+        return self.cogs / self.ave_inv
     
         # Days’ sales in inventory 
     def days_sales_inv_trnovr(self):
-        return 365 / self.days_sales_inv_trnovr
+        return 365 / self.inv_trnovr()
         
 
 #Agriculture
@@ -212,15 +221,10 @@ class Agriculture(Company):
         , longterm_investments 
         , current_lia, noncurrent_lia 
         , owners_equity, net_income , ebit   
-        , total_rev, sales_rev , total_exp, operating_exp, interest_exp, depr_exp, wages_exp  
+        , total_rev, sales_rev , total_exp, operating_exp, interest_exp, depr_exp, wages_exp
+        , date_record  
         ):
-                
-        # Intializing subclass attributes
-        self.total_farm_area = total_farm_area
-        self.total_farm_rev = total_farm_rev
-        self.total_num_stock = total_num_stock
-        self.total_stock_rev = total_stock_rev
-
+        
         # initialize attributes from the base class within the subclasses
         super().__init__(
         cash, account_receivables, inventory, current_assets 
@@ -228,8 +232,15 @@ class Agriculture(Company):
         , longterm_investments 
         , current_lia, noncurrent_lia 
         , owners_equity, net_income , ebit  
-        , total_rev, sales_rev , total_exp, operating_exp, interest_exp, depr_exp, wages_exp  
+        , total_rev, sales_rev , total_exp, operating_exp, interest_exp, depr_exp, wages_exp
+        , date_record  
         )
+        
+        # Intializing subclass attributes
+        self.total_farm_area = total_farm_area
+        self.total_farm_rev = total_farm_rev
+        self.total_num_stock = total_num_stock
+        self.total_stock_rev = total_stock_rev
 
     # Specific Financial Ratios methods
     # yield per unit of area
@@ -250,14 +261,10 @@ class ServiceSector(Company):
         , intangible_assets, longterm_investments 
         , current_lia, noncurrent_lia 
         , owners_equity, net_income , ebit  
-        , total_rev, sales_rev , total_exp, operating_exp, interest_exp, depr_exp, wages_exp  
+        , total_rev, sales_rev , total_exp, operating_exp, interest_exp, depr_exp, wages_exp
+        , date_record  
         ):
-                
-        # Intializing subclass attributes
-        self.total_fee_rev = total_fee_rev
-        self.equity_partner_num = equity_partner_num
-        self.consultant_num = consultant_num
-
+        
         # initialize attributes from the base class within the subclasses
         super().__init__(
         cash, account_receivables, inventory, current_assets 
@@ -265,8 +272,14 @@ class ServiceSector(Company):
         , intangible_assets, longterm_investments 
         , current_lia, noncurrent_lia 
         , owners_equity, net_income , ebit  
-        , total_rev, sales_rev , total_exp, operating_exp, interest_exp, depr_exp, wages_exp  
+        , total_rev, sales_rev , total_exp, operating_exp, interest_exp, depr_exp, wages_exp
+        , date_record  
         )
+        
+        # Intializing subclass attributes
+        self.total_fee_rev = total_fee_rev
+        self.equity_partner_num = equity_partner_num
+        self.consultant_num = consultant_num
     
     # Specific Financial Ratios methods
     # profit margin per partner
@@ -287,14 +300,10 @@ class Manuf(Company):
         , intangible_assets, longterm_investments 
         , current_lia, noncurrent_lia 
         , owners_equity, net_income , ebit  
-        , total_rev, sales_rev , total_exp, operating_exp, interest_exp, depr_exp, wages_exp  
+        , total_rev, sales_rev , total_exp, operating_exp, interest_exp, depr_exp, wages_exp
+        , date_record  
         ):
-                
-        # Initializing subclass attributes
-        self.mtrils_cost = mtrils_cost
-        self.cogs = cogs
-        self.manuf_cost = manuf_cost
-            
+
         # initialize attributes from the base class within the subclasses
         super().__init__(
         cash, account_receivables, inventory, current_assets 
@@ -302,10 +311,14 @@ class Manuf(Company):
         , intangible_assets, longterm_investments 
         , current_lia, noncurrent_lia 
         , owners_equity, net_income , ebit  
-        , total_rev, sales_rev , total_exp, operating_exp, interest_exp, depr_exp, wages_exp  
-        , sales_rev , total_exp, operating_exp, interest_exp, depr_exp, wages_exp  
+        , total_rev, sales_rev , total_exp, operating_exp, interest_exp, depr_exp, wages_exp
+        , date_record   
         )
-
+        
+        # Initializing subclass attributes
+        self.mtrils_cost = mtrils_cost
+        self.cogs = cogs
+        self.manuf_cost = manuf_cost
     
     # Specific Financial Ratios methods
     # Inventory turnover
@@ -330,13 +343,10 @@ class mining_forestry(Company):
         , intangible_assets, longterm_investments 
         , current_lia, noncurrent_lia 
         , owners_equity, net_income , ebit  
-        , total_rev, sales_rev , total_exp, operating_exp, interest_exp, depr_exp, wages_exp  
+        , total_rev, sales_rev , total_exp, operating_exp, interest_exp, depr_exp, wages_exp
+        , date_record  
         ):
-              
-        # Initializing subclass attributes
-        self.accu_depl = accu_depl
-        self.depl_exp = depl_exp
-            
+        
         # initialize attributes from the base class within the subclasses
         super().__init__(
         cash, account_receivables, inventory, current_assets 
@@ -344,10 +354,15 @@ class mining_forestry(Company):
         , intangible_assets, longterm_investments 
         , current_lia, noncurrent_lia 
         , owners_equity, net_income , ebit  
-        , total_rev, sales_rev , total_exp, operating_exp, interest_exp, depr_exp, wages_exp  
-        , sales_rev , total_exp, operating_exp, interest_exp, depr_exp, wages_exp  
+        , total_rev, sales_rev , total_exp, operating_exp, interest_exp, depr_exp, wages_exp
+        , date_record  
+        , sales_rev , total_exp, operating_exp, interest_exp, depr_exp, wages_exp
+        , date_record  
         )
-  
+        
+        # Initializing subclass attributes
+        self.accu_depl = accu_depl
+        self.depl_exp = depl_exp
         
     # Total assets after accumulated depletion
     def total_assets(self):
